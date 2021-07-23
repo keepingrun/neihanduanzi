@@ -1,0 +1,4 @@
+include ':FrameLibrary'
+include ':BaseLibrary'
+include ':app'
+rootProject.name = "EssayJoke"
