@@ -1,4 +1,5 @@
 # 热修复
+
 #### 依赖引入： 
 implementation 'com.alipay.euler:andfix:0.5.0@aar'
 
@@ -21,10 +22,60 @@ startActivity的时候可以设置请求requestCode
 1.startActivity->2.startActivityForResult->3.Instrumentation.execStartActivity->3.ActivityTaskManager.getService().startActivity->4.ActivityThread.performLaunchActivity
 
 ##### performLaunchActivity方法：
+
 ```java
 activity = mInstrumentation.newActivity(
                     cl, component.getClassName(), r.intent);
 ```
 
+```java
+// cl是ClassLoader 通过类加载器从dex文件加载目标Actvity，然后通过反射newInstance()实例化对象
+return (Activity) cl.loadClass(className).newInstance();
+```
 
+##### ClassLoader:
+
+```java
+// 继承关系
+PathClassLoader->BaseDexClassLoader->ClassLoader
+```
+```java
+// ClassLoader.loadClass方法
+protected Class<?> loadClass(String name, boolean resolve)
+        throws ClassNotFoundException
+    {
+            // First, check if the class has already been loaded
+            // 查找是否已加载过
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                try {
+                    if (parent != null) {
+                    	// 没有加载过，调用父加载器加载
+                        c = parent.loadClass(name, false);
+                    } else {
+                        c = findBootstrapClassOrNull(name);
+                    }
+                } catch (ClassNotFoundException e) {
+                    // ClassNotFoundException thrown if class not found
+                    // from the non-null parent class loader
+                }
+
+                if (c == null) {
+                    // If still not found, then invoke findClass in order
+                    // to find the class.
+                    c = findClass(name);
+                }
+            }
+            return c;
+    }
+
+```
+
+类的加载机制流程：
+
+![image-20210723105345326](C:\Users\DS\AppData\Roaming\Typora\typora-user-images\image-20210723105345326.png)
+
+
+
+总结： 类都是通过ClassLoader加载的
 
