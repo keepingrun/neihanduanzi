@@ -71,9 +71,29 @@ protected Class<?> loadClass(String name, boolean resolve)
 
 ```
 
-类的加载机制流程：
+##### 类的加载机制流程：
 
 ![image-20210723105345326](pic/类的加载机制.png)
+
+```java
+// DexPathList对象
+public Class<?> findClass(String name, List<Throwable> suppressed) {
+        for (Element element : dexElements) {
+            Class<?> clazz = element.findClass(name, definingContext, suppressed);
+            // 遍历，一查找到就返回。 利用这个特点，如果我们有修复后的dex，app下载后，可以插入到                   // dexEelment数组的头部，实现修复bug。
+            if (clazz != null) {
+                return clazz;
+            }
+        }
+
+        if (dexElementsSuppressedExceptions != null) {
+            suppressed.addAll(Arrays.asList(dexElementsSuppressedExceptions));
+        }
+        return null;
+    }
+```
+##### dex修复过程：
+![image-20210723105345326](pic/dex修复.png)
 
 
 
