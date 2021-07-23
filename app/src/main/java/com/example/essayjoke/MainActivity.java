@@ -50,6 +50,7 @@ public class MainActivity extends BaseSkinActivity {
                 Toast.makeText(v.getContext(), (2/1) + "sadasda", Toast.LENGTH_SHORT).show();
             }
         });
+        startActivity();
     }
 
     @Override

@@ -24,6 +24,7 @@ import java.util.Map;
 /**
  * <p>Title: </p>
  * <p>Description: 记录异常信息   单例模式</p>
+ * <p>需要重写uncaughtException方法</p>
  * <p>Copyright: DS Technology Co.Ltd  Copyright (c) 2020</p>
  * <p>Company: www.ds.cn</p>
  *
@@ -65,7 +66,6 @@ public class ExceptionCrashHandler implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
         Log.e(TAG, "异常来了", e);
 
-        //
         String crashFileName = saveInfoToSD(e);
         // 缓存崩溃日志文件
         cacheCrashFile(crashFileName);

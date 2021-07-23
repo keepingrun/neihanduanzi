@@ -32,7 +32,8 @@ public class BaseApplication extends Application {
 
     private void initAndFix() {
         patchManager = new PatchManager(this);
-        patchManager.init(PackageManagerUtil.getVersion(this));//current version
+        //current version
+        patchManager.init(PackageManagerUtil.getVersion(this));
         // 加载之前的apatch
         patchManager.loadPatch();
     }
