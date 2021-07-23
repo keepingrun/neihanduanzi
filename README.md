@@ -73,7 +73,7 @@ protected Class<?> loadClass(String name, boolean resolve)
 
 类的加载机制流程：
 
-![image-20210723105345326](C:\Users\DS\AppData\Roaming\Typora\typora-user-images\image-20210723105345326.png)
+![image-20210723105345326](https://github.com/keepingrun/neihanduanzi/tree/main/pic/类的加载机制.png)
 
 
 
