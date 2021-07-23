@@ -26,16 +26,19 @@ public class ViewUtils {
 
     private static final String TAG = "ViewUtils";
 
+    // activity
     public static void inject(Activity activity) {
         inject(new ViewFinder(activity), activity);
     }
+    // view控件
     public static void inject(View view) {
         inject(new ViewFinder(view), view);
     }
+    // fragment
     public static void inject(View view, Object object) {
         inject(new ViewFinder(view), object);
     }
-
+    // object是当前实例
     private static void inject(ViewFinder viewFinder, Object object) {
         injectFiled(viewFinder, object);
         injectEvent(viewFinder, object);
@@ -49,14 +52,18 @@ public class ViewUtils {
     private static void injectEvent(ViewFinder viewFinder, Object object) {
         Class<?> clazz = object.getClass();
         Method[] methods = clazz.getDeclaredMethods();
+        // 遍历所有method方法
         for (Method method : methods) {
+            // 获取OnClick注解的方法
             OnClick onClick = method.getAnnotation(OnClick.class);
             if (onClick != null) {
+                // 获取注解的id数组
                 int[] viewIds = onClick.value();
                 for (int viewId : viewIds) {
                     View view = viewFinder.findViewById(viewId);
-
+                    // 当前method是否需要检查网络
                     boolean isCheckNet = method.getAnnotation(CheckNet.class) != null;
+                    // 给当前view设置点击事件
                     if (view != null) {
                         view.setOnClickListener(new DeclaredOnClickListener(object, method, isCheckNet));
                     }
