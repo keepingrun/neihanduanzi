@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.BaseLibrary.fixbug.FixDexManager;
 import com.example.BaseLibrary.ioc.OnClick;
 import com.example.BaseLibrary.ioc.ViewById;
 import com.example.BaseLibrary.ioc.ViewUtils;
@@ -30,6 +31,24 @@ public class MainActivity extends BaseSkinActivity {
         super.onCreate(savedInstanceState);
         // 注入
         ViewUtils.inject(this);
+        fixDexBug();
+    }
+
+    /**
+     * 自己的修复方式
+     */
+    private void fixDexBug() {
+        File file = new File(getExternalCacheDir(), "fix.dex");
+        if (file.exists()) {
+            try {
+                FixDexManager fixDexManager = new FixDexManager(this);
+                fixDexManager.fixDex(file.getAbsolutePath());
+                Toast.makeText(this, "FixDexManager修复成功", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "FixDexManager修复失败", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -50,7 +69,6 @@ public class MainActivity extends BaseSkinActivity {
                 Toast.makeText(v.getContext(), (2/1) + "sadasda", Toast.LENGTH_SHORT).show();
             }
         });
-        startActivity();
     }
 
     @Override
