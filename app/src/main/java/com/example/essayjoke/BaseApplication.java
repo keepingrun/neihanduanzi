@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.alipay.euler.andfix.patch.PatchManager;
 import com.example.BaseLibrary.exception.ExceptionCrashHandler;
+import com.example.BaseLibrary.fixbug.FixDexManager;
 import com.example.essayjoke.utils.PackageManagerUtil;
 
 /**
@@ -28,6 +29,13 @@ public class BaseApplication extends Application {
         // 热修复
         initAndFix();
 
+        // 自己定义的热修复
+        FixDexManager fixDexManager = new FixDexManager(this);
+        try {
+            fixDexManager.loadFixDex();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initAndFix() {

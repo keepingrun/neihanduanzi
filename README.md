@@ -93,9 +93,34 @@ public Class<?> findClass(String name, List<Throwable> suppressed) {
     }
 ```
 ##### dex修复过程：
+
+1.系统的dex目录：dexDir = context.getDir("odex", Context.MODE_PRIVATE);
+
+2.服务端dex文件保存到系统能够访问的dex目录下
+
+3.创建修复文件fixDexFile的ClassLoader，拿到dexElements数组
+
+4.合并app的dexElements和服务端的dexElements组数。
+
+另外：每次Application启动都要再次调用loadFixDex（）方法，因为要加载之前修复过的dex，之前是把dex拷贝到odex目录，每次启动还是要加载修复的dex的ClassLoader的，也就是走上面的3、4步骤。
+
+详情见BaseLibrary.fixbug.FixDexManager类
+
 ![image-20210723105345326](pic/dex修复.png)
 
 
 
-总结： 类都是通过ClassLoader加载的
+开发细节：
+
+1.可以把出错的class重新打成一个fix.dex, 不太可取，除非不混淆。
+
+2.分包   把不会出错的分到主dex， 其他留在从dex。
+
+3.直接下载整个dex包，进行插入修复，问题dex可能比较大，影响启动速度。
+
+
+
+由于是导入整个包的dex， 所以是可以增加方法，增加类，增加变量，但不能增加资源。
+
+总结： 类都是通过PathDexClassLoader加载的
 

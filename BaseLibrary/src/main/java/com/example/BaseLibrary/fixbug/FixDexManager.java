@@ -25,6 +25,7 @@ import dalvik.system.BaseDexClassLoader;
  * @date 2021/7/23 11:23
  */
 public class FixDexManager {
+    private static final String TAG = "FixDexManager";
     private Context context;
     private File dexDir;
 
@@ -32,16 +33,55 @@ public class FixDexManager {
         this.context = context;
         // 获取应用可以访问的dex目录
         this.dexDir = context.getDir("odex", Context.MODE_PRIVATE);
+        Log.d(TAG, "dexDir.getAbsolutePath:" + dexDir.getAbsolutePath());
     }
 
     /**
-     * 修复dex包
+     * 加载之前修复过的dex包 (Appplication启动就要调用)
+     */
+    public void loadFixDex() throws Exception{
+        File[] dexFiles = dexDir.listFiles();
+
+        List<File> fixDexFiles = new ArrayList<>();
+        for (File dexFile : dexFiles) {
+            if (dexFile.getName().endsWith(".dex")) {
+                fixDexFiles.add(dexFile);
+            }
+        }
+
+        toFixDexFiles(fixDexFiles);
+    }
+
+    private void toFixDexFiles(List<File> fixDexFiles) throws Exception{
+        // 1.先获取已经运行的dexElements
+        ClassLoader applicationClassLoader = context.getClassLoader();
+        Object applicationDexElements = getDexElementsByClassLoader(applicationClassLoader);
+        // 解压路径
+        File optimizedDirectory = new File(dexDir, "odex");
+        if (!optimizedDirectory.exists()) {
+            optimizedDirectory.mkdirs();
+        }
+        // 修复 （创建fixDexFile的ClassLoader）
+        for (File fixDexFile : fixDexFiles) {
+            ClassLoader fixDexClassLoader = new BaseDexClassLoader(fixDexFile.getAbsolutePath() // fixDexFile路径
+                    , optimizedDirectory // 解压路径
+                    , null// .so文件路径
+                    , applicationClassLoader // 父classLoader
+            );
+
+            // 3.把补丁的dexElements插入到数组头部
+            Object fixDexElements = getDexElementsByClassLoader(fixDexClassLoader);
+            applicationDexElements = combineArray(applicationDexElements, fixDexElements);
+        }
+        // 注入到原来的classLoader(applicationClassLoader)中的pathList
+        injectDexElements(applicationClassLoader, applicationDexElements);
+    }
+
+    /**
+     * 修复dex包 （首次修复）
      * @param fixDexPath dex路径
      */
     public void fixDex(String fixDexPath) throws Exception{
-        // 1.先获取已经运行的dexElements
-        ClassLoader applicationClassLoader = context.getClassLoader();
-        Object dexElements = getDexElementsByClassLoader(applicationClassLoader);
 
         // 2.获取dex文件 （补丁）
         // 2.1 移动到系统能够访问的dex目录下
@@ -53,30 +93,15 @@ public class FixDexManager {
         File destFile = new File(dexDir, srcFile.getName());
         if (destFile.exists()) {
             // 已经被加载修复过了
-            Log.d("TAG", "patch " + fixDexPath + " has be loaded!");
+            Log.d(TAG, "patch " + fixDexPath + " has be loaded!");
             return;
         }
         FileUtils.copyFile(srcFile, destFile);
         // 2.2 ClassLoader读取fixDexPath路径  为什么加入到集合？
         List<File> fixDexFiles = new ArrayList<>();
         fixDexFiles.add(destFile);
-        // 解压路径
-        File optimizedDirectory = new File(dexDir, "odex");
-        // 修复 （创建fixDexFile的ClassLoader）
-        for (File fixDexFile : fixDexFiles) {
-            ClassLoader fixDexClassLoader = new BaseDexClassLoader(fixDexFile.getAbsolutePath() // fixDexFile路径
-                    , optimizedDirectory // 解压路径
-                    , null// .so文件路径
-                    , applicationClassLoader // 父classLoader
-                    );
-
-            // 3.把补丁的dexElements插入到数组头部
-            Object fixDexElements = getDexElementsByClassLoader(fixDexClassLoader);
-            dexElements = combineArray(dexElements, fixDexElements);
-            // 注入到原来的classLoader(applicationClassLoader)中的pathList
-            injectDexElements(applicationClassLoader, dexElements);
-        }
-
+        // 修复
+        toFixDexFiles(fixDexFiles);
     }
 
     /**
