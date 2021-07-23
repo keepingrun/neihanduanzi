@@ -1,5 +1,6 @@
 package com.example.essayjoke;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.os.EnvironmentCompat;
 
@@ -31,7 +32,9 @@ public class MainActivity extends BaseSkinActivity {
         super.onCreate(savedInstanceState);
         // 注入
         ViewUtils.inject(this);
-        fixDexBug();
+        // 热修复
+        //fixDexBug();
+        AlertDialog
     }
 
     /**
@@ -51,6 +54,11 @@ public class MainActivity extends BaseSkinActivity {
         }
     }
 
+    @OnClick({R.id.tv_test})
+    public void clickTest(View v) {
+
+    }
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -63,12 +71,6 @@ public class MainActivity extends BaseSkinActivity {
 
     @Override
     public void initView() {
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), (2/1) + "sadasda", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override

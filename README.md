@@ -17,11 +17,11 @@ implementation 'com.alipay.euler:andfix:0.5.0@aar'
 1.NDK
 2.传统使用BitmapFactory压缩
 
-# Activity启动流程
+#### Activity启动流程
 startActivity的时候可以设置请求requestCode
 1.startActivity->2.startActivityForResult->3.Instrumentation.execStartActivity->3.ActivityTaskManager.getService().startActivity->4.ActivityThread.performLaunchActivity
 
-##### performLaunchActivity方法：
+##### 1.performLaunchActivity方法：
 
 ```java
 activity = mInstrumentation.newActivity(
@@ -33,7 +33,7 @@ activity = mInstrumentation.newActivity(
 return (Activity) cl.loadClass(className).newInstance();
 ```
 
-##### ClassLoader:
+##### 2.ClassLoader:
 
 ```java
 // 继承关系
@@ -71,7 +71,7 @@ protected Class<?> loadClass(String name, boolean resolve)
 
 ```
 
-##### 类的加载机制流程：
+##### 3.类的加载机制流程：
 
 ![image-20210723105345326](pic/类的加载机制.png)
 
@@ -92,7 +92,7 @@ public Class<?> findClass(String name, List<Throwable> suppressed) {
         return null;
     }
 ```
-##### dex修复过程：
+#### dex修复过程：
 
 1.系统的dex目录：dexDir = context.getDir("odex", Context.MODE_PRIVATE);
 
@@ -123,4 +123,11 @@ public Class<?> findClass(String name, List<Throwable> suppressed) {
 由于是导入整个包的dex， 所以是可以增加方法，增加类，增加变量，但不能增加资源。
 
 总结： 类都是通过PathDexClassLoader加载的
+
+
+# 通用Dialog
+## AlerDialog分析![](C:\guangcheng\neihanduanzi\pic\AlertDialog源码解析.png)
+
+## builder设计模式
+将对象的构建和表示分离。
 
