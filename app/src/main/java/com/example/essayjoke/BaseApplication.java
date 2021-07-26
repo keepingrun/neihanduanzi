@@ -5,6 +5,7 @@ import android.app.Application;
 import com.alipay.euler.andfix.patch.PatchManager;
 import com.example.BaseLibrary.exception.ExceptionCrashHandler;
 import com.example.BaseLibrary.fixbug.FixDexManager;
+import com.example.essayjoke.utils.HookStartActivityUtils;
 import com.example.essayjoke.utils.PackageManagerUtil;
 
 /**
@@ -36,6 +37,14 @@ public class BaseApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        HookStartActivityUtils hookStartActivityUtils = new HookStartActivityUtils(this);
+        try {
+            hookStartActivityUtils.hookStartActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void initAndFix() {

@@ -25,13 +25,13 @@ public class AlertDialog extends Dialog {
     }
 
     public static class Builder {
-        private final AlertController.AlertParams P;
+        //private final AlertController.AlertParams P;
         public Builder(Context context) {
             this(context, R.style.dialog);
         }
 
         public Builder(Context context, int themeResId) {
-            P = new AlertController.AlertParams();
+            //P = new AlertController.AlertParams();
         }
 
     }

@@ -1,12 +1,16 @@
 package com.example.essayjoke;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.os.EnvironmentCompat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -34,7 +38,13 @@ public class MainActivity extends BaseSkinActivity {
         ViewUtils.inject(this);
         // 热修复
         //fixDexBug();
-        AlertDialog
+        Handler handler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+            }
+        };
+
     }
 
     /**
@@ -56,7 +66,7 @@ public class MainActivity extends BaseSkinActivity {
 
     @OnClick({R.id.tv_test})
     public void clickTest(View v) {
-
+        startActivity(new Intent(this, TestActivity.class));
     }
 
     @Override

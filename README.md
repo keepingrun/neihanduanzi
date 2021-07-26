@@ -1,4 +1,4 @@
-# 热修复
+# 1.热修复
 
 #### 依赖引入： 
 implementation 'com.alipay.euler:andfix:0.5.0@aar'
@@ -18,8 +18,11 @@ implementation 'com.alipay.euler:andfix:0.5.0@aar'
 2.传统使用BitmapFactory压缩
 
 #### Activity启动流程
+
+总：startActivity->检查->启动
+
 startActivity的时候可以设置请求requestCode
-1.startActivity->2.startActivityForResult->3.Instrumentation.execStartActivity->3.ActivityTaskManager.getService().startActivity->4.ActivityThread.performLaunchActivity
+1.startActivity->2.startActivityForResult->3.Instrumentation.execStartActivity->3.ActivityTaskManager.getService().startActivity->4.通过binder调用AMS服务的startActivity方法->5.ActivityThread.performLaunchActivity
 
 ##### 1.performLaunchActivity方法：
 
@@ -125,9 +128,51 @@ public Class<?> findClass(String name, List<Throwable> suppressed) {
 总结： 类都是通过PathDexClassLoader加载的
 
 
-# 通用Dialog
+# 2.通用Dialog
 ## AlerDialog分析![](C:\guangcheng\neihanduanzi\pic\AlertDialog源码解析.png)
 
 ## builder设计模式
 将对象的构建和表示分离。
+
+
+
+
+
+
+
+# 3.插件化
+
+#### 案例：
+
+点击按钮，从服务端下载apk，保存到内存，可跳转并传递参数。
+
+#### 问题：
+
+1.启动的插件Activity，是没有被注册的。 （解决：绕AndroidManifest检测）
+
+2.类需要加载，插件的Activity类在插件中。
+
+3.还需要加载资源。
+
+
+
+没注册的Activity报错，用一个注册的ProxyActivity占坑，
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
