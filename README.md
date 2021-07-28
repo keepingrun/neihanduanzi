@@ -160,6 +160,42 @@ public Class<?> findClass(String name, List<Throwable> suppressed) {
 
 
 
+# 4.性能优化
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### 界面卡顿，由于主线程做了耗时操作：
+
+1.Scrollview绘制的视图过大过多。
+
+2.视图嵌套过多，测量、绘制时间变长
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
